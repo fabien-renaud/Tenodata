@@ -4,7 +4,7 @@
   
 	"version": "1.0.0",
   
-	"description": "",
+	"description": "This Node script collect data like CPU or RAM usage from the computer, and publish them to a MQTT broker",
   
 	"main": "app.js",
   
@@ -32,6 +32,8 @@
   
 	},
   
-	"homepage": "https://github.com/fabien-renaud/Tenodata#readme"
-
+	"homepage": "https://github.com/fabien-renaud/Tenodata#readme", 
+	"dependencies" : {
+		"mqtt" : "2.13.1"
+	}
 }
