@@ -34,6 +34,7 @@
   
 	"homepage": "https://github.com/fabien-renaud/Tenodata#readme", 
 	"dependencies" : {
-		"mqtt" : "2.13.1"
+		"mqtt" : "2.13.1",
+		"systats" : "1.0.1"
 	}
 }

@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
 const client  = mqtt.connect('http://192.168.1.100');
 const cpu = require('cpu-stats');
+//const stats = require('sysstats')();
 
 function getCPU() {
     cpu(500, function(error, result) {
@@ -16,3 +17,4 @@ client.on('connect', () => {
 })
 
 getCPU();
+//stats.cpus();
