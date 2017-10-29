@@ -9,7 +9,8 @@ var cpuPercent = 0,
     cpuIdlep = 0,
     cpuTotalp = 0,
     cpuIdled = 0,
-    cpuTotald = 0;
+    cpuTotald = 0,
+    ramPercent = 0;
 
 function getCPU(send) {
     // refresh cpuCounter
@@ -39,8 +40,21 @@ function getCPU(send) {
     setTimeout(function() { getCPU(true); }, 1000);
 }
 
+function getRAM(send) {
+    // refresh ramCounter
+    ramCounter = stats.mem();
+    ramPercent = ((ramCounter.used / ramCounter.total)*100).toFixed(2);
+
+    // publish data on the broker
+    client.publish('ram', ramPercent.toString());
+
+    // callback getRAM()
+    setTimeout(function() { getRAM(); }, 1000);
+}
+
 client.on('connect', () => {
     client.publish('test', 'New publisher !')
 })
 
 getCPU(false);
+getRAM();
