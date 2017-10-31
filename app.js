@@ -1,6 +1,7 @@
 const mqtt = require('mqtt');
+const address = require('address');
 const client  = mqtt.connect('http://192.168.1.100');
-var stats = require('sysstats')();
+const stats = require('sysstats')();
 var cpuCounter = stats.cpus(),
     ramCounter = stats.mem();
 var cpuPercent = 0,
@@ -10,9 +11,12 @@ var cpuPercent = 0,
     cpuTotalp = 0,
     cpuIdled = 0,
     cpuTotald = 0,
-    ramPercent = 0;
+    ramPercent = 0,
+    date;
+const ip = address.ip();
+const mac = address.mac(function(err, addr) {return addr;});
 
-function getCPU(send) {
+function getCPU() {
     // refresh cpuCounter
     cpuCounter = stats.cpus();
     cpuCounter.forEach(function(e) {
@@ -30,31 +34,30 @@ function getCPU(send) {
 
     // calculate CPU usage in percentage, with 2 decimals
     cpuPercent = (((cpuTotald - cpuIdled)/cpuTotald)*100).toFixed(2);
-
-    // publish data on the broker
-    if(send == true) {
-        client.publish('cpu', cpuPercent.toString());
-    }
-
-    // callback getCPU()
-    setTimeout(function() { getCPU(true); }, 1000);
 }
 
 function getRAM(send) {
     // refresh ramCounter
     ramCounter = stats.mem();
     ramPercent = ((ramCounter.used / ramCounter.total)*100).toFixed(2);
+}
 
-    // publish data on the broker
-    client.publish('ram', ramPercent.toString());
+function publishData() {
+    // update CPU and RAM values
+    getCPU();
+    getRAM();
+    date = new Date();
 
-    // callback getRAM()
-    setTimeout(function() { getRAM(); }, 1000);
+    // send datas to the broker
+    client.publish('tenodata', '{"mac":"'+mac+'", "ip":"'+ip+'", "hours":"'+date+'","cpu": "'+cpuPercent+'", "ram":"'+ramPercent+'"}');
+
+    // callback
+    setTimeout(function() {publishData();}, 1000);
 }
 
 client.on('connect', () => {
-    client.publish('test', 'New publisher !')
+    client.publish('test', 'New publisher !');
 })
 
-getCPU(false);
-getRAM();
+getCPU();
+setTimeout(function() {publishData();}, 1000);
