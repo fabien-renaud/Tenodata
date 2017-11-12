@@ -49,7 +49,7 @@ function publishData() {
     date = new Date();
 
     //Send datas to the broker
-    client.publish('tenodata', '{"mac":"'+mac+'", "ip":"'+ip+'", "hours":"'+date+'","cpu": "'+cpuPercent+'", "ram":"'+ramPercent+'"}');
+    client.publish('tenodata', '{"mac":"'+mac+'", "ip":"'+ip+'", "date":"'+date+'","cpu": "'+cpuPercent+'", "ram":"'+ramPercent+'"}');
 
     //Callback
     setTimeout(function() {publishData();}, 1000);
